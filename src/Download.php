@@ -9,8 +9,10 @@ use SilverShop\Model\ProductOrderItem;
 use SilverShop\Page\Product;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\File;
+use SilverStripe\Assets\Storage\AssetStore;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
 
 /**
@@ -66,15 +68,56 @@ class Download extends DataObject
     }
 
     /**
-     * Keep downloadable files out of the public asset store — they must only be reachable through the gated
-     * controller.
+     * Keep the downloadable file out of the public asset store — it must only ever be reachable through the gated
+     * {@link DownloadController}, never a public URL.
+     *
+     * Two things are needed, and the file's *own* canView is what governs both: (1) `protectFile()` moves it into
+     * the protected store now; (2) setting the file's `CanViewType` to deny anonymous users makes SilverStripe's
+     * AssetControlExtension keep it protected even when the versioned product that owns it is published (otherwise
+     * the publish cascade would move it back to the public store). The controller streams via `getStream()`
+     * server-side, which works regardless of canView, so gated delivery is unaffected.
      */
     protected function onAfterWrite(): void
     {
         parent::onAfterWrite();
-        if ($this->FileID && ($file = $this->File()) && $file->exists() && $file->isPublished()) {
-            $file->protectFile();
+
+        if (!$this->FileID || !($file = $this->File()) || !$file->exists()) {
+            return;
         }
+
+        $changed = false;
+        if ($file->CanViewType !== 'LoggedInUsers') {
+            $file->CanViewType = 'LoggedInUsers';
+            $changed = true;
+        }
+        if ($file->getVisibility() !== AssetStore::VISIBILITY_PROTECTED) {
+            $file->protectFile();
+            $changed = true;
+        }
+        if ($changed) {
+            $file->write();
+        }
+    }
+
+    /**
+     * A download record is never publicly viewable — only staff and the customer who bought its product. This is
+     * also what keeps the attached file in the *protected* asset store: SilverStripe's AssetControlExtension only
+     * publishes an owned file to the public store when its owning record is viewable by anonymous users. So this
+     * method both authorises access and guarantees the file cannot be reached by a public URL.
+     */
+    public function canView($member = null): bool
+    {
+        $member = $member ?: Security::getCurrentUser();
+
+        if ($member && Permission::checkMember($member, 'CMS_ACCESS')) {
+            return true;
+        }
+
+        if ($member && $this->ProductID && $this->grantingOrderFor($member)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
