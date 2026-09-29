@@ -35,33 +35,32 @@ class ProductDownloadExtension extends Extension
     {
         $owner = $this->getOwner();
 
+        // The has_many auto-scaffolds a Downloads tab on *every* product. We only want it on digital ones, and
+        // managed ourselves, so drop the scaffolded version first (this also removes its empty tab).
+        $fields->removeByName('Downloads');
+
         $digitalField = CheckboxField::create(
             'IsDigital',
             _t(self::class . '.IsDigital', 'Digital product (delivered as a download)')
         );
 
-        // The Downloads tab only makes sense for a digital product, so keep it off physical products entirely and
-        // reveal it once the box is ticked and saved (mirrors WooCommerce's "Downloadable" reveal). Tell the
-        // merchant that on a fresh/not-yet-digital product.
-        if (!$owner->IsDigital) {
-            $digitalField->setDescription(
-                _t(self::class . '.IsDigitalHint', 'Tick and save to add downloadable files (a Downloads tab appears).')
-            );
-        }
-
-        $fields->addFieldToTab('Root.Main', $digitalField, 'Content');
-
-        // Downloads need the product to exist first (the has_many relation is keyed on its ID).
+        // Reveal the Downloads tab only once the product is marked digital and saved (mirrors WooCommerce's
+        // "Downloadable" reveal), so physical products stay uncluttered.
         if ($owner->isInDB() && $owner->IsDigital) {
-            $tab = $fields->findOrMakeTab('Root.Downloads');
-            $tab->setTitle(_t(self::class . '.Downloads', 'Downloads'));
+            $fields->findOrMakeTab('Root.Downloads')->setTitle(_t(self::class . '.Downloads', 'Downloads'));
             $fields->addFieldToTab('Root.Downloads', GridField::create(
                 'Downloads',
                 _t(self::class . '.Downloads', 'Downloads'),
                 $owner->Downloads(),
                 GridFieldConfig_RecordEditor::create()
             ));
+        } else {
+            $digitalField->setDescription(
+                _t(self::class . '.IsDigitalHint', 'Tick and save to add downloadable files (a Downloads tab appears).')
+            );
         }
+
+        $fields->addFieldToTab('Root.Main', $digitalField, 'Content');
     }
 
     /**
