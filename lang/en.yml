@@ -33,3 +33,5 @@ en:
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Please log in to access your downloads.'
     Denied: 'You do not have access to this download.'
+    Expired: 'This download link has expired.'
+    LimitReached: 'You have reached the download limit for this file.'

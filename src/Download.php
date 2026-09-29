@@ -173,29 +173,49 @@ class Download extends DataObject
     public function canDownloadFile(?Member $member = null): bool
     {
         $member = $member ?: Security::getCurrentUser();
-        if (!$member || !$this->FileID || (!$this->ProductID && !$this->VariationID)) {
+        if (!$member || !$this->FileID) {
             return false;
         }
 
         $order = $this->grantingOrderFor($member);
-        if (!$order) {
+
+        return $order && !$this->hasExpiredFor($order) && !$this->limitReachedFor($order, $member);
+    }
+
+    /**
+     * Has the download window closed for this order (expiry days counted from when it was paid)?
+     */
+    public function hasExpiredFor(?Order $order): bool
+    {
+        if (!$order || !$order->Paid) {
             return false;
         }
 
         $expiryDays = $this->effectiveExpiryDays();
-        if ($expiryDays > 0 && $order->Paid && (strtotime((string) $order->Paid) + $expiryDays * 86400) < time()) {
+
+        return $expiryDays > 0 && (strtotime((string) $order->Paid) + $expiryDays * 86400) < time();
+    }
+
+    /**
+     * Has the download limit been reached for this purchase? Downloads are counted per order (the entitlement),
+     * so a re-purchase resets the allowance.
+     */
+    public function limitReachedFor(?Order $order, ?Member $member = null): bool
+    {
+        $limit = $this->effectiveDownloadLimit();
+        if ($limit <= 0) {
             return false;
         }
 
-        $limit = $this->effectiveDownloadLimit();
-        if ($limit > 0) {
-            $used = DownloadLog::get()->filter(['MemberID' => $member->ID, 'DownloadID' => $this->ID])->count();
-            if ($used >= $limit) {
-                return false;
-            }
+        if ($order) {
+            $filter = ['DownloadID' => $this->ID, 'OrderID' => $order->ID];
+        } elseif ($member) {
+            $filter = ['DownloadID' => $this->ID, 'MemberID' => $member->ID];
+        } else {
+            return false;
         }
 
-        return true;
+        return DownloadLog::get()->filter($filter)->count() >= $limit;
     }
 
     /**
@@ -240,6 +260,21 @@ class Download extends DataObject
      */
     public function canDownloadViaToken(int $orderID, string $token): bool
     {
+        if (!$this->tokenGrantsOrder($orderID, $token)) {
+            return false;
+        }
+
+        $order = Order::get()->byID($orderID);
+
+        return !$this->hasExpiredFor($order) && !$this->limitReachedFor($order);
+    }
+
+    /**
+     * Does this order id + token authorise this download — a paid order carrying the matching secret token and
+     * containing the download's product/variation? This is the entitlement check, before limit/expiry.
+     */
+    public function tokenGrantsOrder(int $orderID, string $token): bool
+    {
         if (!$this->FileID || (!$this->ProductID && !$this->VariationID) || $token === '') {
             return false;
         }
@@ -249,24 +284,7 @@ class Download extends DataObject
             return false;
         }
 
-        if (!$this->orderContainsThis($order)) {
-            return false;
-        }
-
-        $expiryDays = $this->effectiveExpiryDays();
-        if ($expiryDays > 0 && (strtotime((string) $order->Paid) + $expiryDays * 86400) < time()) {
-            return false;
-        }
-
-        $limit = $this->effectiveDownloadLimit();
-        if ($limit > 0) {
-            $used = DownloadLog::get()->filter(['DownloadID' => $this->ID, 'OrderID' => $order->ID])->count();
-            if ($used >= $limit) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->orderContainsThis($order);
     }
 
     /**

@@ -109,13 +109,13 @@ class DownloadTest extends SapphireTest
     public function testDownloadLimitReached(): void
     {
         SiteConfig::current_site_config()->update(['DownloadLimit' => 2])->write();
-        $this->makePaidOrder($this->buyer, $this->product);
+        $order = $this->makePaidOrder($this->buyer, $this->product);
 
         $this->assertTrue($this->download->canDownloadFile($this->buyer));
 
         // Record two downloads; the third is refused.
-        $this->logDownload();
-        $this->logDownload();
+        $this->logDownload($order);
+        $this->logDownload($order);
         $this->assertFalse($this->download->canDownloadFile($this->buyer));
     }
 
@@ -128,10 +128,10 @@ class DownloadTest extends SapphireTest
             'DownloadLimit' => 1,
         ])->write();
 
-        $this->makePaidOrder($this->buyer, $this->product);
+        $order = $this->makePaidOrder($this->buyer, $this->product);
         $this->assertSame(1, $this->download->effectiveDownloadLimit());
 
-        $this->logDownload();
+        $this->logDownload($order);
         $this->assertFalse($this->download->canDownloadFile($this->buyer));
     }
 
@@ -327,11 +327,12 @@ class DownloadTest extends SapphireTest
         return $order;
     }
 
-    private function logDownload(): void
+    private function logDownload(Order $order): void
     {
         $log = DownloadLog::create();
         $log->DownloadID = $this->download->ID;
         $log->MemberID = $this->buyer->ID;
+        $log->OrderID = $order->ID;
         $log->write();
     }
 }

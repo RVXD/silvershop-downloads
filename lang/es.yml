@@ -33,3 +33,5 @@ es:
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Inicia sesión para acceder a tus descargas.'
     Denied: 'No tienes acceso a esta descarga.'
+    Expired: 'Este enlace de descarga ha caducado.'
+    LimitReached: 'Has alcanzado el límite de descargas de este archivo.'

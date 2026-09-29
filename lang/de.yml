@@ -33,3 +33,5 @@ de:
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Bitte melden Sie sich an, um Ihre Downloads zu öffnen.'
     Denied: 'Sie haben keinen Zugriff auf diesen Download.'
+    Expired: 'Dieser Download-Link ist abgelaufen.'
+    LimitReached: 'Sie haben das Download-Limit für diese Datei erreicht.'

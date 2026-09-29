@@ -33,3 +33,5 @@ nl:
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Log in om je downloads te openen.'
     Denied: 'Je hebt geen toegang tot deze download.'
+    Expired: 'Deze downloadlink is verlopen.'
+    LimitReached: 'Je hebt de downloadlimiet voor dit bestand bereikt.'

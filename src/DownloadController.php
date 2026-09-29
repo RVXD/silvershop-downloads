@@ -51,18 +51,33 @@ class DownloadController extends Controller
         $orderId = (int) $request->getVar('order');
         $token = (string) $request->getVar('token');
 
-        // Guest access via the tokenised link, or a logged-in customer who owns a paid order for it.
-        if ($orderId && $token && $download->canDownloadViaToken($orderId, $token)) {
+        // Resolve the granting order: a guest's tokenised link, or the logged-in customer's paid order.
+        $order = null;
+        if ($orderId && $token && $download->tokenGrantsOrder($orderId, $token)) {
             $order = Order::get()->byID($orderId);
-        } elseif ($member && $download->canDownloadFile($member)) {
+        } elseif ($member) {
             $order = $download->grantingOrderFor($member);
-        } elseif (!$member) {
-            return Security::permissionFailure(
-                $this,
-                _t(self::class . '.LoginRequired', 'Please log in to access your downloads.')
-            );
-        } else {
+        }
+
+        if (!$order) {
+            if (!$member) {
+                return Security::permissionFailure(
+                    $this,
+                    _t(self::class . '.LoginRequired', 'Please log in to access your downloads.')
+                );
+            }
             return $this->httpError(403, _t(self::class . '.Denied', 'You do not have access to this download.'));
+        }
+
+        // Entitled to the file — but the link may have expired or reached its download limit.
+        if ($download->hasExpiredFor($order)) {
+            return $this->httpError(403, _t(self::class . '.Expired', 'This download link has expired.'));
+        }
+        if ($download->limitReachedFor($order, $member)) {
+            return $this->httpError(
+                403,
+                _t(self::class . '.LimitReached', 'You have reached the download limit for this file.')
+            );
         }
 
         $file = $download->File();
