@@ -1,0 +1,17 @@
+it:
+  SilverShop\Downloads\Download:
+    SINGULARNAME: 'Download'
+    PLURALNAME: 'Download'
+    db_Title: 'Titolo'
+    File: 'File'
+    col_Title: 'Titolo'
+    col_File: 'File'
+  SilverShop\Downloads\DownloadLog:
+    SINGULARNAME: 'Registro download'
+    PLURALNAME: 'Registri download'
+  SilverShop\Downloads\ProductDownloadExtension:
+    IsDigital: 'Prodotto digitale (consegnato come download)'
+    Downloads: 'Download'
+  SilverShop\Downloads\DownloadController:
+    LoginRequired: 'Accedi per visualizzare i tuoi download.'
+    Denied: 'Non hai accesso a questo download.'

@@ -1,0 +1,35 @@
+{
+    "name": "silvershop/downloads",
+    "description": "Downloadable (digital) products for SilverShop: attach files to a product and let paying customers download them through a secure, ownership-checked link.",
+    "type": "silverstripe-vendormodule",
+    "keywords": ["silverstripe", "silvershop", "ecommerce", "downloads", "digital", "downloadable"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "SilverShop Contributors",
+            "homepage": "https://github.com/silvershop/silvershop-downloads/graphs/contributors"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "silverstripe/framework": "^6.0",
+        "silverstripe/asset-admin": "^3.0",
+        "silvershop/core": "^6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "6.x-dev"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "SilverShop\\Downloads\\": "src/",
+            "SilverShop\\Downloads\\Tests\\": "tests/unit/"
+        }
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev"
+}

@@ -1,0 +1,17 @@
+fr:
+  SilverShop\Downloads\Download:
+    SINGULARNAME: 'Téléchargement'
+    PLURALNAME: 'Téléchargements'
+    db_Title: 'Titre'
+    File: 'Fichier'
+    col_Title: 'Titre'
+    col_File: 'Fichier'
+  SilverShop\Downloads\DownloadLog:
+    SINGULARNAME: 'Journal de téléchargement'
+    PLURALNAME: 'Journaux de téléchargement'
+  SilverShop\Downloads\ProductDownloadExtension:
+    IsDigital: 'Produit numérique (livré en téléchargement)'
+    Downloads: 'Téléchargements'
+  SilverShop\Downloads\DownloadController:
+    LoginRequired: 'Veuillez vous connecter pour accéder à vos téléchargements.'
+    Denied: 'Vous n''avez pas accès à ce téléchargement.'

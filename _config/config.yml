@@ -1,0 +1,16 @@
+---
+Name: silvershop-downloads
+After:
+  - '#silvershop'
+---
+SilverShop\Page\Product:
+  extensions:
+    - SilverShop\Downloads\ProductDownloadExtension
+
+SilverStripe\Security\Member:
+  extensions:
+    - SilverShop\Downloads\MemberDownloadsExtension
+
+SilverStripe\Control\Director:
+  rules:
+    'shop-downloads': SilverShop\Downloads\DownloadController

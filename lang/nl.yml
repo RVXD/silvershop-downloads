@@ -1,0 +1,17 @@
+nl:
+  SilverShop\Downloads\Download:
+    SINGULARNAME: 'Download'
+    PLURALNAME: 'Downloads'
+    db_Title: 'Titel'
+    File: 'Bestand'
+    col_Title: 'Titel'
+    col_File: 'Bestand'
+  SilverShop\Downloads\DownloadLog:
+    SINGULARNAME: 'Downloadlog'
+    PLURALNAME: 'Downloadlogs'
+  SilverShop\Downloads\ProductDownloadExtension:
+    IsDigital: 'Digitaal product (geleverd als download)'
+    Downloads: 'Downloads'
+  SilverShop\Downloads\DownloadController:
+    LoginRequired: 'Log in om je downloads te openen.'
+    Denied: 'Je hebt geen toegang tot deze download.'

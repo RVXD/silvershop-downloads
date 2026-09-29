@@ -1,0 +1,17 @@
+es:
+  SilverShop\Downloads\Download:
+    SINGULARNAME: 'Descarga'
+    PLURALNAME: 'Descargas'
+    db_Title: 'Título'
+    File: 'Archivo'
+    col_Title: 'Título'
+    col_File: 'Archivo'
+  SilverShop\Downloads\DownloadLog:
+    SINGULARNAME: 'Registro de descargas'
+    PLURALNAME: 'Registros de descargas'
+  SilverShop\Downloads\ProductDownloadExtension:
+    IsDigital: 'Producto digital (entregado como descarga)'
+    Downloads: 'Descargas'
+  SilverShop\Downloads\DownloadController:
+    LoginRequired: 'Inicia sesión para acceder a tus descargas.'
+    Denied: 'No tienes acceso a esta descarga.'
