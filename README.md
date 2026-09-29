@@ -18,9 +18,11 @@ containing the product.
 - **Protected storage** — files are moved out of the public asset store on save and kept there across publishes.
 - **Ownership-gated delivery** — a download is only served to a customer with a *paid* order containing the
   product/variation.
-- **Order confirmation email + guest checkout** — download links are added to the order confirmation email, as
-  **tokenised links that work without a login** (so guest checkout works); logged-in customers also get the
-  account list. The email intro text is configurable in *Settings → Shop → Downloads*.
+- **Guest-friendly delivery** — every order gets a secret token so a download link works **without a login**
+  (`$Order.DownloadLinksForOrder`), which is what guest checkout needs. Logged-in customers get
+  `$Member.AvailableDownloads`. Render these in your order confirmation email and account templates (see
+  [Displaying downloads](#displaying-downloads)); the email intro text is configurable in *Settings → Shop →
+  Downloads*.
 - **Per-customer download limit** and optional **link expiry** (configurable).
 - **Sold downloads can't be deleted** — once a product/variation has been ordered, its downloads are protected from
   deletion so buyers don't lose access.
@@ -61,6 +63,34 @@ Then run `dev/build?flush=all`.
 
 `DownloadLink()` points at the gated controller (`shop-downloads/process/<id>`), which enforces login,
 ownership, the download limit and expiry before streaming the file.
+
+## Displaying downloads
+
+Surfacing is theme territory — the module provides the data, your templates render it. (A module can't reliably
+override the core order-email / account templates, so add these small snippets to your own.)
+
+**Order confirmation email** — in your `SilverShop/Model/Order_ReceiptEmail.ss`, inside `<% with $Order %>`:
+
+```html
+<% if $DownloadLinksForOrder %>
+    <h2><%t SilverShop\Downloads\DownloadOrderExtension.EmailHeading "Your downloads" %></h2>
+    <% if $SiteConfig.DownloadEmailText %>$SiteConfig.DownloadEmailText<% end_if %>
+    <ul>
+        <% loop $DownloadLinksForOrder %><li><a href="$Link.ATT">$Title.XML</a></li><% end_loop %>
+    </ul>
+<% end_if %>
+```
+
+**Account page** — in your `SilverShop/Page/Layout/AccountPage.ss`, inside `<% with $Member %>`:
+
+```html
+<% if $AvailableDownloads %>
+    <h2>Your downloads</h2>
+    <ul>
+        <% loop $AvailableDownloads %><li><a href="$DownloadLink.ATT">$Title.XML</a></li><% end_loop %>
+    </ul>
+<% end_if %>
+```
 
 ## Configuration
 

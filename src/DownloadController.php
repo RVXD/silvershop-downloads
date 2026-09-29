@@ -76,7 +76,7 @@ class DownloadController extends Controller
         $response->addHeader('Content-Type', 'application/octet-stream');
         $response->addHeader(
             'Content-Disposition',
-            'attachment; filename="' . addslashes($file->getFilename()) . '"'
+            'attachment; filename="' . addslashes(basename((string) $file->getFilename())) . '"'
         );
 
         return $response;
