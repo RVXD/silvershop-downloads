@@ -9,6 +9,7 @@ use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
+use SilverStripe\Forms\LiteralField;
 
 /**
  * Adds downloadable-file support to {@link \SilverShop\Page\Product}: an "IsDigital" flag and a set of
@@ -53,6 +54,21 @@ class ProductDownloadExtension extends Extension
                 _t(self::class . '.Downloads', 'Downloads'),
                 $owner->Downloads(),
                 GridFieldConfig_RecordEditor::create()
+            ));
+
+            $fields->addFieldToTab('Root.Downloads', LiteralField::create(
+                'DownloadsInfo',
+                '<p class="message notice" style="margin-top:1.5em;display:flex;align-items:flex-start;gap:.5em">'
+                . '<span class="font-icon-info-circled" aria-hidden="true"></span><span>'
+                . _t(
+                    self::class . '.DownloadsInfo',
+                    'Files added here are delivered to the customer once they pay for an order containing this '
+                    . 'product, through a private per-customer link — they are kept in protected storage and are '
+                    . 'never reachable by a public URL. If this product has variations, each variation can also '
+                    . 'have its own files: open a variation on the "Variations" tab and add them there. Files added '
+                    . 'here are delivered to buyers of any variation.'
+                )
+                . '</span></p>'
             ));
 
             // A digital product doesn't ship and isn't stock-tracked, so drop those tabs (Shipping is core's,

@@ -13,6 +13,7 @@ es:
     IsDigital: 'Producto digital (entregado como descarga)'
     IsDigitalHint: 'Marca y guarda para añadir archivos descargables (aparecerá una pestaña Descargas).'
     Downloads: 'Descargas'
+    DownloadsInfo: 'Los archivos que añadas aquí se entregan al cliente en cuanto paga un pedido que contiene este producto, mediante un enlace privado por cliente: se guardan en almacenamiento protegido y nunca son accesibles por una URL pública. Si este producto tiene variaciones, cada variación también puede tener sus propios archivos: abre una variación en la pestaña "Variaciones" y añádelos ahí. Los archivos añadidos aquí se entregan a los compradores de cualquier variación.'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Inicia sesión para acceder a tus descargas.'
     Denied: 'No tienes acceso a esta descarga.'
