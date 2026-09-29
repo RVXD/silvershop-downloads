@@ -135,6 +135,21 @@ class DownloadTest extends SapphireTest
         $this->assertFalse($this->download->canDownloadFile($this->buyer));
     }
 
+    public function testDownloadLimitIsPerFile(): void
+    {
+        // A product with two files: the limit applies to each file independently.
+        SiteConfig::current_site_config()->update(['DownloadLimit' => 1])->write();
+        $order = $this->makePaidOrder($this->buyer, $this->product);
+        $secondFile = $this->makeDownload('Second file', (int) $this->product->ID);
+
+        // Use up the first file's single download.
+        $this->logDownload($order);
+
+        $this->assertTrue($this->download->limitReachedFor($order));
+        $this->assertFalse($secondFile->limitReachedFor($order));
+        $this->assertTrue($secondFile->canDownloadFile($this->buyer));
+    }
+
     public function testExpiredDownloadDenied(): void
     {
         $this->product->update([
