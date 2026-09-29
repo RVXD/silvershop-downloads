@@ -2,6 +2,9 @@
 Name: silvershop-downloads
 After:
   - '#silvershop'
+  # Run our Product extension after silvershop/stock so we can drop its Stock tab on digital products
+  # (a missing reference is ignored, so this is safe when stock isn't installed).
+  - '#silvershop-stock'
 ---
 SilverShop\Page\Product:
   extensions:

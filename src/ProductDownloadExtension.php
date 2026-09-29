@@ -54,6 +54,10 @@ class ProductDownloadExtension extends Extension
                 $owner->Downloads(),
                 GridFieldConfig_RecordEditor::create()
             ));
+
+            // A digital product doesn't ship and isn't stock-tracked, so drop those tabs (Shipping is core's,
+            // Stock belongs to the optional silvershop/stock module — removeByName is a no-op if absent).
+            $fields->removeByName(['Shipping', 'Stock']);
         } else {
             $digitalField->setDescription(
                 _t(self::class . '.IsDigitalHint', 'Tick and save to add downloadable files (a Downloads tab appears).')

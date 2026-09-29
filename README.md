@@ -9,7 +9,8 @@ containing the product.
 
 ## Features
 
-- **Digital product flag** on each product (`IsDigital`) — a seam shipping modules can read to skip
+- **Digital product flag** on each product (`IsDigital`). Marking a product digital hides its **Shipping** and
+  **Stock** tabs (they don't apply), and `isDigital()` is a seam a shipping module can read to skip
   weight/shipping for the line.
 - **Multiple files per product**, managed on a dedicated *Downloads* tab in the CMS.
 - **Protected storage** — files are moved out of the public asset store on save.
