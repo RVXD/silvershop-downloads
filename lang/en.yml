@@ -14,6 +14,18 @@ en:
     IsDigitalHint: 'Tick and save to add downloadable files (a Downloads tab appears).'
     Downloads: 'Downloads'
     DownloadsInfo: 'Files added here are delivered to the customer once they pay for an order containing this product, through a private per-customer link — they are kept in protected storage and are never reachable by a public URL. If this product has variations, each variation can also have its own files: open a variation on the "Variations" tab and add them there. Files added here are delivered to buyers of any variation.'
+    DownloadSettings: 'Download settings'
+    Override: 'Override the shop default download limit and expiry for this product'
+    DownloadLimit: 'Download limit per customer'
+    DownloadLimitDesc: '0 = unlimited. Only used when the box above is ticked.'
+    DownloadExpiryDays: 'Download expiry (days after purchase)'
+    DownloadExpiryDaysDesc: '0 = never expires. Only used when the box above is ticked.'
+  SilverShop\Downloads\ShopDownloadSettingsExtension:
+    TabDownloads: 'Downloads'
+    DownloadLimit: 'Download limit per customer'
+    DownloadLimitDesc: '0 = unlimited.'
+    DownloadExpiryDays: 'Download expiry (days after purchase)'
+    DownloadExpiryDaysDesc: '0 = never expires.'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Please log in to access your downloads.'
     Denied: 'You do not have access to this download.'

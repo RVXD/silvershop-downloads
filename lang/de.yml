@@ -14,6 +14,18 @@ de:
     IsDigitalHint: 'Ankreuzen und speichern, um herunterladbare Dateien hinzuzufügen (ein Downloads-Tab erscheint).'
     Downloads: 'Downloads'
     DownloadsInfo: 'Hier hinzugefügte Dateien werden dem Kunden geliefert, sobald er eine Bestellung mit diesem Produkt bezahlt hat — über einen privaten, kundenspezifischen Link. Sie liegen in geschütztem Speicher und sind nie über eine öffentliche URL erreichbar. Hat dieses Produkt Varianten, kann jede Variante eigene Dateien haben: Öffnen Sie eine Variante im Tab „Varianten" und fügen Sie sie dort hinzu. Hier hinzugefügte Dateien erhalten Käufer jeder Variante.'
+    DownloadSettings: 'Download-Einstellungen'
+    Override: 'Standard-Download-Limit und -Ablauf des Shops für dieses Produkt überschreiben'
+    DownloadLimit: 'Download-Limit pro Kunde'
+    DownloadLimitDesc: '0 = unbegrenzt. Nur verwendet, wenn das Kästchen oben aktiviert ist.'
+    DownloadExpiryDays: 'Download-Ablauf (Tage nach Kauf)'
+    DownloadExpiryDaysDesc: '0 = läuft nie ab. Nur verwendet, wenn das Kästchen oben aktiviert ist.'
+  SilverShop\Downloads\ShopDownloadSettingsExtension:
+    TabDownloads: 'Downloads'
+    DownloadLimit: 'Download-Limit pro Kunde'
+    DownloadLimitDesc: '0 = unbegrenzt.'
+    DownloadExpiryDays: 'Download-Ablauf (Tage nach Kauf)'
+    DownloadExpiryDaysDesc: '0 = läuft nie ab.'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Bitte melden Sie sich an, um Ihre Downloads zu öffnen.'
     Denied: 'Sie haben keinen Zugriff auf diesen Download.'

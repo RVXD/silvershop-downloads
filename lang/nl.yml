@@ -14,6 +14,18 @@ nl:
     IsDigitalHint: 'Vink aan en sla op om downloadbare bestanden toe te voegen (er verschijnt een tab Downloads).'
     Downloads: 'Downloads'
     DownloadsInfo: 'Bestanden die je hier toevoegt worden aan de klant geleverd zodra die een bestelling met dit product heeft betaald, via een privélink per klant — ze staan in beveiligde opslag en zijn nooit via een openbare URL bereikbaar. Heeft dit product variaties, dan kan elke variatie ook eigen bestanden hebben: open een variatie op het tabblad "Variaties" en voeg ze daar toe. Bestanden hier worden aan kopers van elke variatie geleverd.'
+    DownloadSettings: 'Download-instellingen'
+    Override: 'De standaard downloadlimiet en verlooptijd van de shop voor dit product overschrijven'
+    DownloadLimit: 'Downloadlimiet per klant'
+    DownloadLimitDesc: '0 = onbeperkt. Alleen gebruikt als het vakje hierboven is aangevinkt.'
+    DownloadExpiryDays: 'Verlooptijd download (dagen na aankoop)'
+    DownloadExpiryDaysDesc: '0 = verloopt nooit. Alleen gebruikt als het vakje hierboven is aangevinkt.'
+  SilverShop\Downloads\ShopDownloadSettingsExtension:
+    TabDownloads: 'Downloads'
+    DownloadLimit: 'Downloadlimiet per klant'
+    DownloadLimitDesc: '0 = onbeperkt.'
+    DownloadExpiryDays: 'Verlooptijd download (dagen na aankoop)'
+    DownloadExpiryDaysDesc: '0 = verloopt nooit.'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Log in om je downloads te openen.'
     Denied: 'Je hebt geen toegang tot deze download.'

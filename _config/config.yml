@@ -18,6 +18,10 @@ SilverStripe\Security\Member:
   extensions:
     - SilverShop\Downloads\MemberDownloadsExtension
 
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    - SilverShop\Downloads\ShopDownloadSettingsExtension
+
 SilverStripe\Control\Director:
   rules:
     'shop-downloads': SilverShop\Downloads\DownloadController

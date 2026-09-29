@@ -14,6 +14,18 @@ es:
     IsDigitalHint: 'Marca y guarda para añadir archivos descargables (aparecerá una pestaña Descargas).'
     Downloads: 'Descargas'
     DownloadsInfo: 'Los archivos que añadas aquí se entregan al cliente en cuanto paga un pedido que contiene este producto, mediante un enlace privado por cliente: se guardan en almacenamiento protegido y nunca son accesibles por una URL pública. Si este producto tiene variaciones, cada variación también puede tener sus propios archivos: abre una variación en la pestaña "Variaciones" y añádelos ahí. Los archivos añadidos aquí se entregan a los compradores de cualquier variación.'
+    DownloadSettings: 'Ajustes de descarga'
+    Override: 'Anular el límite y la caducidad de descarga predeterminados de la tienda para este producto'
+    DownloadLimit: 'Límite de descargas por cliente'
+    DownloadLimitDesc: '0 = ilimitado. Solo se usa cuando la casilla de arriba está marcada.'
+    DownloadExpiryDays: 'Caducidad de la descarga (días tras la compra)'
+    DownloadExpiryDaysDesc: '0 = nunca caduca. Solo se usa cuando la casilla de arriba está marcada.'
+  SilverShop\Downloads\ShopDownloadSettingsExtension:
+    TabDownloads: 'Descargas'
+    DownloadLimit: 'Límite de descargas por cliente'
+    DownloadLimitDesc: '0 = ilimitado.'
+    DownloadExpiryDays: 'Caducidad de la descarga (días tras la compra)'
+    DownloadExpiryDaysDesc: '0 = nunca caduca.'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Inicia sesión para acceder a tus descargas.'
     Denied: 'No tienes acceso a esta descarga.'

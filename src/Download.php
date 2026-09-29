@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SilverShop\Downloads;
 
 use SilverShop\Model\Order;
-use SilverShop\Model\ProductOrderItem;
+use SilverShop\Model\Product\OrderItem as ProductOrderItem;
 use SilverShop\Model\Variation\OrderItem as VariationOrderItem;
 use SilverShop\Model\Variation\Variation;
 use SilverShop\Page\Product;
@@ -16,6 +16,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
+use SilverStripe\SiteConfig\SiteConfig;
 
 /**
  * A downloadable file attached to a product or one of its variations. After a customer pays for an order
@@ -53,12 +54,6 @@ class Download extends DataObject
     private static array $owns = ['File'];
 
     private static string $default_sort = '"SortOrder" ASC, "Title" ASC';
-
-    /** Max downloads per customer (0 = unlimited). */
-    private static int $download_limit = 5;
-
-    /** Days a download link stays valid after the order was paid (0 = never expires). */
-    private static int $link_expiry_days = 0;
 
     private static array $summary_fields = [
         'Title' => 'Title',
@@ -144,21 +139,19 @@ class Download extends DataObject
     }
 
     /**
-     * Has this download's product (or variation) been sold in any placed order?
+     * Has this download's product (or variation) been sold in any *paid* order?
      */
     public function hasBeenSold(): bool
     {
-        $placed = (array) Order::config()->get('placed_status');
-
         if ($this->VariationID) {
             return VariationOrderItem::get()
-                ->filter(['ProductVariationID' => $this->VariationID, 'Order.Status' => $placed])
+                ->filter(['ProductVariationID' => $this->VariationID, 'Order.Paid:not' => null])
                 ->exists();
         }
 
         if ($this->ProductID) {
             return ProductOrderItem::get()
-                ->filter(['ProductID' => $this->ProductID, 'Order.Status' => $placed])
+                ->filter(['ProductID' => $this->ProductID, 'Order.Paid:not' => null])
                 ->exists();
         }
 
@@ -189,12 +182,12 @@ class Download extends DataObject
             return false;
         }
 
-        $expiryDays = (int) static::config()->get('link_expiry_days');
+        $expiryDays = $this->effectiveExpiryDays();
         if ($expiryDays > 0 && $order->Paid && (strtotime((string) $order->Paid) + $expiryDays * 86400) < time()) {
             return false;
         }
 
-        $limit = (int) static::config()->get('download_limit');
+        $limit = $this->effectiveDownloadLimit();
         if ($limit > 0) {
             $used = DownloadLog::get()->filter(['MemberID' => $member->ID, 'DownloadID' => $this->ID])->count();
             if ($used >= $limit) {
@@ -213,14 +206,12 @@ class Download extends DataObject
      */
     public function grantingOrderFor(Member $member): ?Order
     {
-        $placed = (array) Order::config()->get('placed_status');
-
         if ($this->VariationID) {
             $orderIds = VariationOrderItem::get()
                 ->filter([
                     'ProductVariationID' => $this->VariationID,
                     'Order.MemberID' => $member->ID,
-                    'Order.Status' => $placed,
+                    'Order.Paid:not' => null,
                 ])
                 ->column('OrderID');
         } elseif ($this->ProductID) {
@@ -228,7 +219,7 @@ class Download extends DataObject
                 ->filter([
                     'ProductID' => $this->ProductID,
                     'Order.MemberID' => $member->ID,
-                    'Order.Status' => $placed,
+                    'Order.Paid:not' => null,
                 ])
                 ->column('OrderID');
         } else {
@@ -240,5 +231,48 @@ class Download extends DataObject
         }
 
         return Order::get()->filter('ID', array_map('intval', $orderIds))->sort('"Paid" DESC')->first();
+    }
+
+    /**
+     * The product this download belongs to (directly, or via its variation).
+     */
+    public function owningProduct(): ?Product
+    {
+        if ($this->ProductID) {
+            return $this->Product();
+        }
+        if ($this->VariationID && ($variation = $this->Variation()) && $variation->exists()) {
+            return $variation->Product();
+        }
+
+        return null;
+    }
+
+    /**
+     * Effective per-customer download limit: the product's override if enabled, otherwise the shop-wide default
+     * (SiteConfig → Shop → Downloads). 0 = unlimited.
+     */
+    public function effectiveDownloadLimit(): int
+    {
+        $product = $this->owningProduct();
+        if ($product && $product->OverrideDownloadSettings) {
+            return max(0, (int) $product->DownloadLimit);
+        }
+
+        return max(0, (int) SiteConfig::current_site_config()->DownloadLimit);
+    }
+
+    /**
+     * Effective expiry window in days after the order was paid: the product's override if enabled, otherwise the
+     * shop-wide default. 0 = never expires.
+     */
+    public function effectiveExpiryDays(): int
+    {
+        $product = $this->owningProduct();
+        if ($product && $product->OverrideDownloadSettings) {
+            return max(0, (int) $product->DownloadExpiryDays);
+        }
+
+        return max(0, (int) SiteConfig::current_site_config()->DownloadExpiryDays);
     }
 }

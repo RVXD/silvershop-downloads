@@ -10,18 +10,27 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\ToggleCompositeField;
 
 /**
- * Adds downloadable-file support to {@link \SilverShop\Page\Product}: an "IsDigital" flag and a set of
- * {@link Download} records managed on a dedicated Downloads tab.
+ * Adds downloadable-file support to {@link \SilverShop\Page\Product}: an "IsDigital" flag, a set of
+ * {@link Download} records managed on a dedicated Downloads tab, and optional per-product overrides of the
+ * shop-wide download limit / expiry.
  *
  * @property bool $IsDigital
+ * @property bool $OverrideDownloadSettings
+ * @property int $DownloadLimit
+ * @property int $DownloadExpiryDays
  * @extends Extension<\SilverShop\Page\Product>
  */
 class ProductDownloadExtension extends Extension
 {
     private static array $db = [
         'IsDigital' => 'Boolean',
+        'OverrideDownloadSettings' => 'Boolean',
+        'DownloadLimit' => 'Int',
+        'DownloadExpiryDays' => 'Int',
     ];
 
     private static array $has_many = [
@@ -36,9 +45,9 @@ class ProductDownloadExtension extends Extension
     {
         $owner = $this->getOwner();
 
-        // The has_many auto-scaffolds a Downloads tab on *every* product. We only want it on digital ones, and
-        // managed ourselves, so drop the scaffolded version first (this also removes its empty tab).
-        $fields->removeByName('Downloads');
+        // The has_many auto-scaffolds a Downloads tab on *every* product, and the settings $db fields scaffold onto
+        // Main. We manage all of these ourselves below, so drop the scaffolded versions first.
+        $fields->removeByName(['Downloads', 'OverrideDownloadSettings', 'DownloadLimit', 'DownloadExpiryDays']);
 
         $digitalField = CheckboxField::create(
             'IsDigital',
@@ -70,6 +79,21 @@ class ProductDownloadExtension extends Extension
                 )
                 . '</span></p>'
             ));
+
+            $fields->addFieldToTab('Root.Downloads', ToggleCompositeField::create(
+                'DownloadSettings',
+                _t(self::class . '.DownloadSettings', 'Download settings'),
+                [
+                    CheckboxField::create(
+                        'OverrideDownloadSettings',
+                        _t(self::class . '.Override', 'Override the shop default download limit and expiry for this product')
+                    ),
+                    NumericField::create('DownloadLimit', _t(self::class . '.DownloadLimit', 'Download limit per customer'))
+                        ->setDescription(_t(self::class . '.DownloadLimitDesc', '0 = unlimited. Only used when the box above is ticked.')),
+                    NumericField::create('DownloadExpiryDays', _t(self::class . '.DownloadExpiryDays', 'Download expiry (days after purchase)'))
+                        ->setDescription(_t(self::class . '.DownloadExpiryDaysDesc', '0 = never expires. Only used when the box above is ticked.')),
+                ]
+            ), 'DownloadsInfo');
 
             // A digital product doesn't ship and isn't stock-tracked, so drop those tabs (Shipping is core's,
             // Stock belongs to the optional silvershop/stock module — removeByName is a no-op if absent).

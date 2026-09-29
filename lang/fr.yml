@@ -14,6 +14,18 @@ fr:
     IsDigitalHint: 'Cochez et enregistrez pour ajouter des fichiers téléchargeables (un onglet Téléchargements apparaît).'
     Downloads: 'Téléchargements'
     DownloadsInfo: 'Les fichiers ajoutés ici sont remis au client dès qu''il paie une commande contenant ce produit, via un lien privé par client — ils sont conservés dans un stockage protégé et ne sont jamais accessibles par une URL publique. Si ce produit a des variantes, chaque variante peut aussi avoir ses propres fichiers : ouvrez une variante dans l''onglet « Variantes » et ajoutez-les. Les fichiers ajoutés ici sont remis aux acheteurs de n''importe quelle variante.'
+    DownloadSettings: 'Paramètres de téléchargement'
+    Override: 'Remplacer la limite et l''expiration de téléchargement par défaut de la boutique pour ce produit'
+    DownloadLimit: 'Limite de téléchargements par client'
+    DownloadLimitDesc: '0 = illimité. Utilisé uniquement si la case ci-dessus est cochée.'
+    DownloadExpiryDays: 'Expiration du téléchargement (jours après l''achat)'
+    DownloadExpiryDaysDesc: '0 = n''expire jamais. Utilisé uniquement si la case ci-dessus est cochée.'
+  SilverShop\Downloads\ShopDownloadSettingsExtension:
+    TabDownloads: 'Téléchargements'
+    DownloadLimit: 'Limite de téléchargements par client'
+    DownloadLimitDesc: '0 = illimité.'
+    DownloadExpiryDays: 'Expiration du téléchargement (jours après l''achat)'
+    DownloadExpiryDaysDesc: '0 = n''expire jamais.'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Veuillez vous connecter pour accéder à vos téléchargements.'
     Denied: 'Vous n''avez pas accès à ce téléchargement.'

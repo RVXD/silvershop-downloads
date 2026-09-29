@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace SilverShop\Downloads;
 
-use SilverShop\Model\Order;
-use SilverShop\Model\ProductOrderItem;
+use SilverShop\Model\Product\OrderItem as ProductOrderItem;
 use SilverShop\Model\Variation\OrderItem as VariationOrderItem;
 use SilverStripe\Core\Extension;
 use SilverStripe\Model\List\ArrayList;
@@ -26,14 +25,13 @@ class MemberDownloadsExtension extends Extension
     public function AvailableDownloads(): SS_List
     {
         $member = $this->getOwner();
-        $placed = (array) Order::config()->get('placed_status');
 
         $productIds = ProductOrderItem::get()
-            ->filter(['Order.MemberID' => $member->ID, 'Order.Status' => $placed])
+            ->filter(['Order.MemberID' => $member->ID, 'Order.Paid:not' => null])
             ->column('ProductID');
 
         $variationIds = VariationOrderItem::get()
-            ->filter(['Order.MemberID' => $member->ID, 'Order.Status' => $placed])
+            ->filter(['Order.MemberID' => $member->ID, 'Order.Paid:not' => null])
             ->column('ProductVariationID');
 
         $downloadIds = [];

@@ -61,11 +61,15 @@ ownership, the download limit and expiry before streaming the file.
 
 ## Configuration
 
-```yaml
-SilverShop\Downloads\Download:
-  download_limit: 5      # max downloads per customer, per file (0 = unlimited)
-  link_expiry_days: 0    # days a link stays valid after the order was paid (0 = never expires)
-```
+Download limit and expiry are edited in the CMS, not in YAML:
+
+- **Global defaults** — *Settings → Shop → Downloads*: **Download limit per customer** (0 = unlimited) and
+  **Download expiry (days after purchase)** (0 = never expires). Both default to 0 (perpetual, unlimited access),
+  matching the market norm.
+- **Per-product overrides** — on a product's **Downloads** tab, expand **Download settings** and tick *Override the
+  shop default…* to set a limit / expiry just for that product.
+
+Access is granted only once the order is **paid**; expiry is counted from the order's paid date.
 
 ## License
 
