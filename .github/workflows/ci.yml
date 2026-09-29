@@ -10,4 +10,5 @@ jobs:
     name: CI
     uses: silverstripe/gha-ci/.github/workflows/ci.yml@v1
     with:
-      composer_require_extra: phpunit/phpunit:^11.3
+      composer_require_extra:
+        phpunit/phpunit:^11.3
