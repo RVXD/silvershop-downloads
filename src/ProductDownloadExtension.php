@@ -68,10 +68,37 @@ class ProductDownloadExtension extends Extension
     }
 
     /**
-     * Is this a digital product (delivered as a download rather than shipped)?
-     *
-     * Shipping modules can read this to skip weight/shipping for the line. Wiring it into the shipping
-     * calculation needs a core hook and is intentionally left to the shipping layer.
+     * A digital product doesn't ship, so zero its weight/dimensions. Core's weight-based shipping modifier
+     * returns 0 for a zero-weight order, and a digital line then adds nothing to a mixed order's shipping.
+     * (Flat-rate/zone shipping ignores weight, so a shop using those still needs its shipping module to skip
+     * digital orders — see isDigital().)
+     */
+    public function onBeforeWrite(): void
+    {
+        $owner = $this->getOwner();
+        if ($owner->IsDigital) {
+            $owner->Weight = 0;
+            $owner->Height = 0;
+            $owner->Width = 0;
+            $owner->Depth = 0;
+        }
+    }
+
+    /**
+     * A digital product is always in stock and needs no stock records. silvershop/stock fires this hook from
+     * {@link \SilverShop\Stock\Extensions\ProductStockExtension::hasAvailableStock()}, letting us report the
+     * product available without writing any ProductWarehouseStock row. No-op when stock isn't installed.
+     */
+    public function updateHasAvailableStock(&$available, int $require = 1): void
+    {
+        if ($this->getOwner()->IsDigital) {
+            $available = true;
+        }
+    }
+
+    /**
+     * Is this a digital product (delivered as a download rather than shipped)? A shipping module can read this to
+     * skip shipping for the line/order (weight is already zeroed above, which covers weight-based shipping).
      */
     public function isDigital(): bool
     {
