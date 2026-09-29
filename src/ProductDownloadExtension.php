@@ -35,13 +35,24 @@ class ProductDownloadExtension extends Extension
     {
         $owner = $this->getOwner();
 
-        $fields->addFieldToTab('Root.Main', CheckboxField::create(
+        $digitalField = CheckboxField::create(
             'IsDigital',
             _t(self::class . '.IsDigital', 'Digital product (delivered as a download)')
-        ), 'Content');
+        );
+
+        // The Downloads tab only makes sense for a digital product, so keep it off physical products entirely and
+        // reveal it once the box is ticked and saved (mirrors WooCommerce's "Downloadable" reveal). Tell the
+        // merchant that on a fresh/not-yet-digital product.
+        if (!$owner->IsDigital) {
+            $digitalField->setDescription(
+                _t(self::class . '.IsDigitalHint', 'Tick and save to add downloadable files (a Downloads tab appears).')
+            );
+        }
+
+        $fields->addFieldToTab('Root.Main', $digitalField, 'Content');
 
         // Downloads need the product to exist first (the has_many relation is keyed on its ID).
-        if ($owner->isInDB()) {
+        if ($owner->isInDB() && $owner->IsDigital) {
             $tab = $fields->findOrMakeTab('Root.Downloads');
             $tab->setTitle(_t(self::class . '.Downloads', 'Downloads'));
             $fields->addFieldToTab('Root.Downloads', GridField::create(

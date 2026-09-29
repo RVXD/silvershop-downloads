@@ -11,6 +11,7 @@ en:
     PLURALNAME: 'Download logs'
   SilverShop\Downloads\ProductDownloadExtension:
     IsDigital: 'Digital product (delivered as a download)'
+    IsDigitalHint: 'Tick and save to add downloadable files (a Downloads tab appears).'
     Downloads: 'Downloads'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Please log in to access your downloads.'

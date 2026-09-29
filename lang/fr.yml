@@ -11,6 +11,7 @@ fr:
     PLURALNAME: 'Journaux de téléchargement'
   SilverShop\Downloads\ProductDownloadExtension:
     IsDigital: 'Produit numérique (livré en téléchargement)'
+    IsDigitalHint: 'Cochez et enregistrez pour ajouter des fichiers téléchargeables (un onglet Téléchargements apparaît).'
     Downloads: 'Téléchargements'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Veuillez vous connecter pour accéder à vos téléchargements.'

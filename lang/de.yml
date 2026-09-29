@@ -11,6 +11,7 @@ de:
     PLURALNAME: 'Download-Protokolle'
   SilverShop\Downloads\ProductDownloadExtension:
     IsDigital: 'Digitales Produkt (als Download geliefert)'
+    IsDigitalHint: 'Ankreuzen und speichern, um herunterladbare Dateien hinzuzufügen (ein Downloads-Tab erscheint).'
     Downloads: 'Downloads'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Bitte melden Sie sich an, um Ihre Downloads zu öffnen.'

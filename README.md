@@ -36,8 +36,10 @@ Then run `dev/build?flush=all`.
 
 ## Usage
 
-1. Edit a product and tick **Digital product** on the *Main* tab (optional — it just marks the product).
-2. On the **Downloads** tab, add a *Download* record and upload its file.
+1. Edit a product, tick **Digital product** on the *Main* tab and **save**. A **Downloads** tab appears (it stays
+   hidden on physical products, so the catalog isn't cluttered).
+2. On the **Downloads** tab, add a *Download* record and upload its file. The file is moved to the protected asset
+   store and kept there — it is never served by a public URL.
 3. Once a customer pays for an order containing that product, they can download the file. Build the link in
    a template or account page with:
 

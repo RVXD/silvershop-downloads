@@ -11,6 +11,7 @@ it:
     PLURALNAME: 'Registri download'
   SilverShop\Downloads\ProductDownloadExtension:
     IsDigital: 'Prodotto digitale (consegnato come download)'
+    IsDigitalHint: 'Seleziona e salva per aggiungere file scaricabili (comparirà una scheda Download).'
     Downloads: 'Download'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Accedi per visualizzare i tuoi download.'

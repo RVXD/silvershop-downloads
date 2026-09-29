@@ -11,6 +11,7 @@ nl:
     PLURALNAME: 'Downloadlogs'
   SilverShop\Downloads\ProductDownloadExtension:
     IsDigital: 'Digitaal product (geleverd als download)'
+    IsDigitalHint: 'Vink aan en sla op om downloadbare bestanden toe te voegen (er verschijnt een tab Downloads).'
     Downloads: 'Downloads'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Log in om je downloads te openen.'
