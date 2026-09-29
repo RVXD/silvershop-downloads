@@ -10,6 +10,10 @@ SilverShop\Page\Product:
   extensions:
     - SilverShop\Downloads\ProductDownloadExtension
 
+SilverShop\Model\Variation\Variation:
+  extensions:
+    - SilverShop\Downloads\VariationDownloadExtension
+
 SilverStripe\Security\Member:
   extensions:
     - SilverShop\Downloads\MemberDownloadsExtension
@@ -17,3 +21,27 @@ SilverStripe\Security\Member:
 SilverStripe\Control\Director:
   rules:
     'shop-downloads': SilverShop\Downloads\DownloadController
+
+# Digital goods are commonly file types SilverStripe's default upload whitelist blocks (ebooks, design source,
+# lossless audio, fonts). Allow a curated set of safe, non-executable formats so merchants can upload them — these
+# files are stored in the protected asset store and only served through the gated controller, never executed.
+# Override/extend this list in your project if you need more (or fewer) types.
+SilverStripe\Assets\File:
+  allowed_extensions:
+    - epub
+    - mobi
+    - azw3
+    - ai
+    - psd
+    - indd
+    - eps
+    - sketch
+    - fig
+    - flac
+    - aiff
+    - wav
+    - m4a
+    - otf
+    - ttf
+    - woff
+    - woff2

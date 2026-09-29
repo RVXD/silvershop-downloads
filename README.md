@@ -12,11 +12,17 @@ containing the product.
 - **Digital product flag** on each product (`IsDigital`). Marking a product digital hides its **Shipping** and
   **Stock** tabs (they don't apply), and `isDigital()` is a seam a shipping module can read to skip
   weight/shipping for the line.
-- **Multiple files per product**, managed on a dedicated *Downloads* tab in the CMS.
-- **Protected storage** — files are moved out of the public asset store on save.
+- **Multiple files per product**, managed on a dedicated *Downloads* tab in the CMS (with a file-size column).
+- **Per-variation files** — a product's variations can each carry their own downloads (delivered only to buyers of
+  that variation), alongside shared product-wide files (delivered to buyers of any variation).
+- **Protected storage** — files are moved out of the public asset store on save and kept there across publishes.
 - **Ownership-gated delivery** — a download is only served to a logged-in customer who has a *paid* order
-  containing the product.
+  containing the product/variation.
 - **Per-customer download limit** and optional **link expiry** (configurable).
+- **Sold downloads can't be deleted** — once a product/variation has been ordered, its downloads are protected from
+  deletion so buyers don't lose access.
+- **Common digital-goods file types allowed** (ebooks, design source, fonts, lossless audio) that the default
+  upload whitelist blocks — configurable.
 - **Download log** for the limit check and a basic audit trail.
 - **`$member->AvailableDownloads()`** helper for an account-page "My downloads" list.
 - Translatable (en, nl, de, fr, it, es).

@@ -6,6 +6,7 @@ namespace SilverShop\Downloads;
 
 use SilverShop\Model\Order;
 use SilverShop\Model\ProductOrderItem;
+use SilverShop\Model\Variation\OrderItem as VariationOrderItem;
 use SilverStripe\Core\Extension;
 use SilverStripe\Model\List\ArrayList;
 use SilverStripe\Model\List\SS_List;
@@ -19,25 +20,39 @@ use SilverStripe\Model\List\SS_List;
 class MemberDownloadsExtension extends Extension
 {
     /**
-     * Downloads attached to products in this member's paid orders.
+     * Downloads this member has bought: product-wide downloads for any product in their paid orders, plus
+     * variation-specific downloads for the variations they bought.
      */
     public function AvailableDownloads(): SS_List
     {
         $member = $this->getOwner();
+        $placed = (array) Order::config()->get('placed_status');
 
         $productIds = ProductOrderItem::get()
-            ->filter([
-                'Order.MemberID' => $member->ID,
-                'Order.Status' => (array) Order::config()->get('placed_status'),
-            ])
+            ->filter(['Order.MemberID' => $member->ID, 'Order.Status' => $placed])
             ->column('ProductID');
 
-        if (empty($productIds)) {
+        $variationIds = VariationOrderItem::get()
+            ->filter(['Order.MemberID' => $member->ID, 'Order.Status' => $placed])
+            ->column('ProductVariationID');
+
+        $downloadIds = [];
+        if (!empty($productIds)) {
+            $downloadIds = array_merge($downloadIds, Download::get()
+                ->filter('ProductID', array_values(array_unique(array_map('intval', $productIds))))
+                ->column('ID'));
+        }
+        if (!empty($variationIds)) {
+            $downloadIds = array_merge($downloadIds, Download::get()
+                ->filter('VariationID', array_values(array_unique(array_map('intval', $variationIds))))
+                ->column('ID'));
+        }
+
+        $downloadIds = array_values(array_unique(array_map('intval', $downloadIds)));
+        if (empty($downloadIds)) {
             return ArrayList::create();
         }
 
-        $productIds = array_values(array_unique(array_map('intval', $productIds)));
-
-        return Download::get()->filter('ProductID', $productIds);
+        return Download::get()->filter('ID', $downloadIds);
     }
 }

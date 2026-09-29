@@ -6,6 +6,8 @@ namespace SilverShop\Downloads;
 
 use SilverShop\Model\Order;
 use SilverShop\Model\ProductOrderItem;
+use SilverShop\Model\Variation\OrderItem as VariationOrderItem;
+use SilverShop\Model\Variation\Variation;
 use SilverShop\Page\Product;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\File;
@@ -16,16 +18,22 @@ use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
 
 /**
- * A downloadable file attached to a product. After a customer pays for an order containing the product, they may
- * download it (subject to a per-customer download limit and optional link expiry). The file is kept in the
- * protected asset store and only served through {@link DownloadController} — never a public URL.
+ * A downloadable file attached to a product or one of its variations. After a customer pays for an order
+ * containing that product/variation, they may download it (subject to a per-customer download limit and optional
+ * link expiry). The file is kept in the protected asset store and only served through {@link DownloadController}
+ * — never a public URL.
+ *
+ * A download is scoped to either a Product (delivered to any buyer of the product, including any variation) or a
+ * specific Variation (delivered only to buyers of that variation).
  *
  * @property string $Title
  * @property int $SortOrder
  * @property int $FileID
  * @property int $ProductID
+ * @property int $VariationID
  * @method File File()
  * @method Product Product()
+ * @method Variation Variation()
  */
 class Download extends DataObject
 {
@@ -39,6 +47,7 @@ class Download extends DataObject
     private static array $has_one = [
         'File' => File::class,
         'Product' => Product::class,
+        'Variation' => Variation::class,
     ];
 
     private static array $owns = ['File'];
@@ -54,12 +63,13 @@ class Download extends DataObject
     private static array $summary_fields = [
         'Title' => 'Title',
         'File.Name' => 'File',
+        'File.Size' => 'Size',
     ];
 
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
-        $fields->removeByName(['SortOrder', 'ProductID']);
+        $fields->removeByName(['SortOrder', 'ProductID', 'VariationID']);
 
         $fields->replaceField('File', UploadField::create('File', _t(self::class . '.File', 'File'))
             ->setFolderName('downloads'));
@@ -113,8 +123,43 @@ class Download extends DataObject
             return true;
         }
 
-        if ($member && $this->ProductID && $this->grantingOrderFor($member)) {
+        if ($member && ($this->ProductID || $this->VariationID) && $this->grantingOrderFor($member)) {
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Don't allow a download to be deleted once its product/variation has been sold — customers who bought it
+     * would lose access (and deleting the record would take its file with it).
+     */
+    public function canDelete($member = null): bool
+    {
+        if ($this->hasBeenSold()) {
+            return false;
+        }
+
+        return parent::canDelete($member);
+    }
+
+    /**
+     * Has this download's product (or variation) been sold in any placed order?
+     */
+    public function hasBeenSold(): bool
+    {
+        $placed = (array) Order::config()->get('placed_status');
+
+        if ($this->VariationID) {
+            return VariationOrderItem::get()
+                ->filter(['ProductVariationID' => $this->VariationID, 'Order.Status' => $placed])
+                ->exists();
+        }
+
+        if ($this->ProductID) {
+            return ProductOrderItem::get()
+                ->filter(['ProductID' => $this->ProductID, 'Order.Status' => $placed])
+                ->exists();
         }
 
         return false;
@@ -135,7 +180,7 @@ class Download extends DataObject
     public function canDownloadFile(?Member $member = null): bool
     {
         $member = $member ?: Security::getCurrentUser();
-        if (!$member || !$this->FileID || !$this->ProductID) {
+        if (!$member || !$this->FileID || (!$this->ProductID && !$this->VariationID)) {
             return false;
         }
 
@@ -161,17 +206,34 @@ class Download extends DataObject
     }
 
     /**
-     * The most recent paid order by this member that contains this download's product (grants access).
+     * The most recent paid order by this member that grants this download. For a variation-scoped download that
+     * means an order containing the variation; for a product-scoped download, an order containing the product —
+     * which also covers variation purchases, since a variation order item extends the product order item and
+     * carries the parent ProductID.
      */
     public function grantingOrderFor(Member $member): ?Order
     {
-        $orderIds = ProductOrderItem::get()
-            ->filter([
-                'ProductID' => $this->ProductID,
-                'Order.MemberID' => $member->ID,
-                'Order.Status' => (array) Order::config()->get('placed_status'),
-            ])
-            ->column('OrderID');
+        $placed = (array) Order::config()->get('placed_status');
+
+        if ($this->VariationID) {
+            $orderIds = VariationOrderItem::get()
+                ->filter([
+                    'ProductVariationID' => $this->VariationID,
+                    'Order.MemberID' => $member->ID,
+                    'Order.Status' => $placed,
+                ])
+                ->column('OrderID');
+        } elseif ($this->ProductID) {
+            $orderIds = ProductOrderItem::get()
+                ->filter([
+                    'ProductID' => $this->ProductID,
+                    'Order.MemberID' => $member->ID,
+                    'Order.Status' => $placed,
+                ])
+                ->column('OrderID');
+        } else {
+            return null;
+        }
 
         if (empty($orderIds)) {
             return null;
