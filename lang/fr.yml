@@ -26,6 +26,10 @@ fr:
     DownloadLimitDesc: '0 = illimité.'
     DownloadExpiryDays: 'Expiration du téléchargement (jours après l''achat)'
     DownloadExpiryDaysDesc: '0 = n''expire jamais.'
+    DownloadEmailText: 'Texte de l''e-mail de téléchargement'
+    DownloadEmailTextDesc: 'Affiché au-dessus des liens de téléchargement dans l''e-mail de confirmation de commande (pour les commandes contenant des produits téléchargeables).'
+  SilverShop\Downloads\DownloadOrderExtension:
+    EmailHeading: 'Vos téléchargements'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Veuillez vous connecter pour accéder à vos téléchargements.'
     Denied: 'Vous n''avez pas accès à ce téléchargement.'

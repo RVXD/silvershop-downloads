@@ -26,6 +26,10 @@ nl:
     DownloadLimitDesc: '0 = onbeperkt.'
     DownloadExpiryDays: 'Verlooptijd download (dagen na aankoop)'
     DownloadExpiryDaysDesc: '0 = verloopt nooit.'
+    DownloadEmailText: 'E-mailtekst voor downloads'
+    DownloadEmailTextDesc: 'Wordt boven de downloadlinks in de orderbevestigingsmail getoond (voor bestellingen met downloadbare producten).'
+  SilverShop\Downloads\DownloadOrderExtension:
+    EmailHeading: 'Je downloads'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Log in om je downloads te openen.'
     Denied: 'Je hebt geen toegang tot deze download.'

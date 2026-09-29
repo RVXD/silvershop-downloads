@@ -26,6 +26,10 @@ es:
     DownloadLimitDesc: '0 = ilimitado.'
     DownloadExpiryDays: 'Caducidad de la descarga (días tras la compra)'
     DownloadExpiryDaysDesc: '0 = nunca caduca.'
+    DownloadEmailText: 'Texto del correo de descargas'
+    DownloadEmailTextDesc: 'Se muestra encima de los enlaces de descarga en el correo de confirmación del pedido (para pedidos con productos descargables).'
+  SilverShop\Downloads\DownloadOrderExtension:
+    EmailHeading: 'Tus descargas'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Inicia sesión para acceder a tus descargas.'
     Denied: 'No tienes acceso a esta descarga.'

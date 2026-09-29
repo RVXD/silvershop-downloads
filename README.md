@@ -16,8 +16,11 @@ containing the product.
 - **Per-variation files** — a product's variations can each carry their own downloads (delivered only to buyers of
   that variation), alongside shared product-wide files (delivered to buyers of any variation).
 - **Protected storage** — files are moved out of the public asset store on save and kept there across publishes.
-- **Ownership-gated delivery** — a download is only served to a logged-in customer who has a *paid* order
-  containing the product/variation.
+- **Ownership-gated delivery** — a download is only served to a customer with a *paid* order containing the
+  product/variation.
+- **Order confirmation email + guest checkout** — download links are added to the order confirmation email, as
+  **tokenised links that work without a login** (so guest checkout works); logged-in customers also get the
+  account list. The email intro text is configurable in *Settings → Shop → Downloads*.
 - **Per-customer download limit** and optional **link expiry** (configurable).
 - **Sold downloads can't be deleted** — once a product/variation has been ordered, its downloads are protected from
   deletion so buyers don't lose access.

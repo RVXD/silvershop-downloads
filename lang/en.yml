@@ -26,6 +26,10 @@ en:
     DownloadLimitDesc: '0 = unlimited.'
     DownloadExpiryDays: 'Download expiry (days after purchase)'
     DownloadExpiryDaysDesc: '0 = never expires.'
+    DownloadEmailText: 'Download email text'
+    DownloadEmailTextDesc: 'Shown above the download links in the order confirmation email (for orders that contain downloadable products).'
+  SilverShop\Downloads\DownloadOrderExtension:
+    EmailHeading: 'Your downloads'
   SilverShop\Downloads\DownloadController:
     LoginRequired: 'Please log in to access your downloads.'
     Denied: 'You do not have access to this download.'

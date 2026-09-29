@@ -234,6 +234,67 @@ class Download extends DataObject
     }
 
     /**
+     * Token-based access for guest checkout: the link carries the order id and the order's secret token, so a
+     * customer without a login can download. Verifies the token, that the order is paid and contains this
+     * download, and the expiry / per-order limit.
+     */
+    public function canDownloadViaToken(int $orderID, string $token): bool
+    {
+        if (!$this->FileID || (!$this->ProductID && !$this->VariationID) || $token === '') {
+            return false;
+        }
+
+        $order = Order::get()->byID($orderID);
+        if (!$order || !$order->Paid || !$order->DownloadToken || !hash_equals((string) $order->DownloadToken, $token)) {
+            return false;
+        }
+
+        if (!$this->orderContainsThis($order)) {
+            return false;
+        }
+
+        $expiryDays = $this->effectiveExpiryDays();
+        if ($expiryDays > 0 && (strtotime((string) $order->Paid) + $expiryDays * 86400) < time()) {
+            return false;
+        }
+
+        $limit = $this->effectiveDownloadLimit();
+        if ($limit > 0) {
+            $used = DownloadLog::get()->filter(['DownloadID' => $this->ID, 'OrderID' => $order->ID])->count();
+            if ($used >= $limit) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * The gated download URL for a specific order, carrying its token (guest-friendly).
+     */
+    public function tokenLink(Order $order): string
+    {
+        return DownloadController::singleton()->Link('process/' . $this->ID)
+            . '?order=' . (int) $order->ID . '&token=' . urlencode((string) $order->DownloadToken);
+    }
+
+    private function orderContainsThis(Order $order): bool
+    {
+        if ($this->VariationID) {
+            return VariationOrderItem::get()
+                ->filter(['ProductVariationID' => $this->VariationID, 'OrderID' => $order->ID])
+                ->exists();
+        }
+        if ($this->ProductID) {
+            return ProductOrderItem::get()
+                ->filter(['ProductID' => $this->ProductID, 'OrderID' => $order->ID])
+                ->exists();
+        }
+
+        return false;
+    }
+
+    /**
      * The product this download belongs to (directly, or via its variation).
      */
     public function owningProduct(): ?Product

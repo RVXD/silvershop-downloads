@@ -193,6 +193,37 @@ class DownloadTest extends SapphireTest
         $this->assertFalse($this->download->canDelete());
     }
 
+    public function testGuestCanDownloadViaValidToken(): void
+    {
+        $order = $this->makePaidOrder($this->buyer, $this->product);
+
+        $this->assertNotEmpty($order->DownloadToken);
+        $this->assertTrue($this->download->canDownloadViaToken((int) $order->ID, (string) $order->DownloadToken));
+        $this->assertFalse($this->download->canDownloadViaToken((int) $order->ID, 'wrong-token'));
+    }
+
+    public function testTokenAccessRequiresPaidOrder(): void
+    {
+        $order = Order::create();
+        $order->MemberID = $this->buyer->ID;
+        $order->Status = 'Unpaid';
+        $order->write();
+        $this->addItem($order, $this->product);
+        $order->write();
+
+        $this->assertEmpty($order->DownloadToken);
+        $this->assertFalse($this->download->canDownloadViaToken((int) $order->ID, 'anything'));
+    }
+
+    public function testOrderDownloadLinksCarryToken(): void
+    {
+        $order = $this->makePaidOrder($this->buyer, $this->product);
+        $links = $order->DownloadLinksForOrder();
+
+        $this->assertCount(1, $links);
+        $this->assertStringContainsString('token=' . $order->DownloadToken, (string) $links->first()->Link);
+    }
+
     public function testDigitalProductZerosWeight(): void
     {
         $product = Product::create();

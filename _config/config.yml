@@ -22,6 +22,10 @@ SilverStripe\SiteConfig\SiteConfig:
   extensions:
     - SilverShop\Downloads\ShopDownloadSettingsExtension
 
+SilverShop\Model\Order:
+  extensions:
+    - SilverShop\Downloads\DownloadOrderExtension
+
 SilverStripe\Control\Director:
   rules:
     'shop-downloads': SilverShop\Downloads\DownloadController
