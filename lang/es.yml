@@ -35,3 +35,11 @@ es:
     Denied: 'No tienes acceso a esta descarga.'
     Expired: 'Este enlace de descarga ha caducado.'
     LimitReached: 'Has alcanzado el límite de descargas de este archivo.'
+  SilverShop\Downloads\DownloadActivityReport:
+    TITLE: 'Actividad de descargas'
+    DESC: 'Archivos más descargados por número de descargas, para un período.'
+    Start: 'Desde (fecha de descarga)'
+    End: 'Hasta (fecha de descarga)'
+    ColTitle: 'Descarga'
+    ColDownloads: 'Descargas'
+    ColCustomers: 'Clientes'

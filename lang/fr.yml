@@ -35,3 +35,11 @@ fr:
     Denied: 'Vous n''avez pas accès à ce téléchargement.'
     Expired: 'Ce lien de téléchargement a expiré.'
     LimitReached: 'Vous avez atteint la limite de téléchargement pour ce fichier.'
+  SilverShop\Downloads\DownloadActivityReport:
+    TITLE: 'Activité de téléchargement'
+    DESC: 'Fichiers les plus téléchargés par nombre de téléchargements, pour une période.'
+    Start: 'Du (date de téléchargement)'
+    End: 'Au (date de téléchargement)'
+    ColTitle: 'Téléchargement'
+    ColDownloads: 'Téléchargements'
+    ColCustomers: 'Clients'

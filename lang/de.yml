@@ -35,3 +35,11 @@ de:
     Denied: 'Sie haben keinen Zugriff auf diesen Download.'
     Expired: 'Dieser Download-Link ist abgelaufen.'
     LimitReached: 'Sie haben das Download-Limit für diese Datei erreicht.'
+  SilverShop\Downloads\DownloadActivityReport:
+    TITLE: 'Download-Aktivität'
+    DESC: 'Meistheruntergeladene Dateien nach Anzahl der Downloads, für einen Zeitraum.'
+    Start: 'Von (Download-Datum)'
+    End: 'Bis (Download-Datum)'
+    ColTitle: 'Download'
+    ColDownloads: 'Downloads'
+    ColCustomers: 'Kunden'

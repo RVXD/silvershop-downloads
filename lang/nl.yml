@@ -35,3 +35,11 @@ nl:
     Denied: 'Je hebt geen toegang tot deze download.'
     Expired: 'Deze downloadlink is verlopen.'
     LimitReached: 'Je hebt de downloadlimiet voor dit bestand bereikt.'
+  SilverShop\Downloads\DownloadActivityReport:
+    TITLE: 'Downloadactiviteit'
+    DESC: 'Meest gedownloade bestanden op aantal downloads, voor een periode.'
+    Start: 'Vanaf (downloaddatum)'
+    End: 'Tot (downloaddatum)'
+    ColTitle: 'Download'
+    ColDownloads: 'Downloads'
+    ColCustomers: 'Klanten'
